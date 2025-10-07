@@ -1,4 +1,4 @@
-FROM node:18 AS build
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
@@ -10,7 +10,11 @@ COPY src ./src
 COPY .env ./
 RUN npm run build
 
-FROM nginx:alpine
+FROM nginx:stable-alpine
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY nginx.conf /etc/nginx/conf.d/app.conf
 
 COPY --from=build /app/build /usr/share/nginx/html
 
