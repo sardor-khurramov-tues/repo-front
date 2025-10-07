@@ -15,9 +15,9 @@ export default function Login() {
 
       const token = res.data.payload.accessToken;
 
-      const userRes = await API.get("/user", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      const userRes = await API.get("/user");
 
       localStorage.setItem("user", JSON.stringify(userRes.data.payload));
 
