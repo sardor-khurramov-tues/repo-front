@@ -7,6 +7,10 @@ export default function Home() {
       <p>
         Please <Link to="/login">Login</Link> to continue.
       </p>
+      <h1 className="justify-center text-red-600">Hello Tailwind!</h1>
+      <div className="min-h-screen flex items-center justify-center bg-blue-500 text-white text-3xl font-bold">
+        Tailwind is working 🎉
+      </div>
     </div>
   );
 }

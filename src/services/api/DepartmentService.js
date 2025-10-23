@@ -1,9 +1,8 @@
-import API from '../api';
+import API from './api';
 
-export const getDepartments = async () => {
+export const getDepartmentsByAdmin = async () => {
   try {
     const response = await API.get('/admin/department');
-    // Assuming the API returns the list directly or in a 'payload' field
     return response.data.payload || response.data;
   } catch (error) {
     console.error("Failed to fetch departments:", error);
@@ -36,6 +35,26 @@ export const deleteDepartment = async (id) => {
     await API.delete(`/admin/department/${id}`);
   } catch (error) {
     console.error(`Failed to delete department ${id}:`, error);
+    throw error;
+  }
+};
+
+export const getPublicDepartment = async () => {
+  try {
+    const response = await API.get('/public/department');
+    return response.data.payload || response.data;
+  } catch (error) {
+    console.error("Failed to fetch departments:", error);
+    throw error;
+  }
+};
+
+export const getPublicDepartmentNonBlocked = async () => {
+  try {
+    const response = await API.get('/public/department?isBlocked=false');
+    return response.data.payload || response.data;
+  } catch (error) {
+    console.error("Failed to fetch departments:", error);
     throw error;
   }
 };

@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "home": "Home",
+    "login": "Login",
+    "logout": "Logout",
+    "profile": "Profile",
+    "register": "Registration",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "welcome": "Welcome to our application!",
+    "description": "This text is huge and could be complex, but it's easy to update here."
+  }
+}

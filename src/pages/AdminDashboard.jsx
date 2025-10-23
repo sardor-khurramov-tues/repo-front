@@ -8,6 +8,8 @@ export default function AdminDashboard() {
       <Link to="/user">View User Data</Link>
       <br />
       <Link to="/admin/department">Department Dashboard</Link>
+      <br />
+      <Link to="/admin/user">User Dashboard</Link>
     </div>
   );
 }

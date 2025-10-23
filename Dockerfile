@@ -5,19 +5,16 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY public ./public
 COPY src ./src
+COPY eslint.config.js ./
+COPY index.html ./
+COPY postcss.config.js ./
+COPY tailwind.config.js ./
+COPY vite.config.js ./
 COPY .env ./
-RUN npm run build
 
-FROM nginx:stable-alpine
+RUN npm run build && npm install -g serve
 
-RUN rm /etc/nginx/conf.d/default.conf
+EXPOSE 3000
 
-COPY nginx.conf /etc/nginx/conf.d/app.conf
-
-COPY --from=build /app/build /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "dist", "-l", "3000"]

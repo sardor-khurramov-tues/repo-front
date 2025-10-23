@@ -1,9 +1,11 @@
 import axios from "axios";
 
-console.log('API base URL:', process.env.REACT_APP_BASE_URL);
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+console.log('API base URL:', BASE_URL);
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL || "http://localhost:8900/repo",
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
@@ -22,8 +24,8 @@ API.interceptors.response.use(
 
       if (originalRequest.url === '/refresh-token') {
           console.error('Refresh token is invalid, redirecting to login.');
-          window.location.href = '/login';
-          return Promise.reject(error);
+          globalThis.location.href = '/login';
+          throw error;
       }
 
       try {
@@ -33,12 +35,12 @@ API.interceptors.response.use(
         console.error('Refresh token failed:', refreshError);
         localStorage.removeItem('user');
 
-        window.location.href = '/login';
-        return Promise.reject(refreshError);
+        globalThis.location.href = '/login';
+        throw refreshError;
       }
     }
 
-    return Promise.reject(error);
+    throw error;
   }
 );
 

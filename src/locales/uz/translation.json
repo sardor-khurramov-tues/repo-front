@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "home": "Bosh sahifa",
+    "login": "Kirish",
+    "logout": "Chiqish",
+    "profile": "Profil",
+    "register": "Registratsiya",
+    "dashboard": "Boshqaruv paneli"
+  },
+  "homepage": {
+    "welcome": "Ilovamizga xush kelibsiz!",
+    "description": "Bu matn juda katta va murakkab boʻlishi mumkin, lekin bu yerda uni yangilash oson."
+  }
+}

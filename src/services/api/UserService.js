@@ -1,4 +1,4 @@
-import API from '../api';
+import API from './api';
 
 export const updateUserInStorage = async () => {
   try {
@@ -8,13 +8,9 @@ export const updateUserInStorage = async () => {
     return updatedUser;
   } catch (error) {
     console.error("Failed to fetch and update user details:", error);
-    // If the token is invalid, the interceptor in api.js should handle it.
-    // We return null to indicate failure to the calling component.
-    // return null;
 
-    window.location.href = '/login';
-    return Promise.reject(error);
-
+    globalThis.location.href = '/login';
+    throw error;
   }
 };
 
@@ -38,4 +34,16 @@ export const updateUserPassword = async (data) => {
     console.error("Failed to update password:", error);
     throw error;
   }
+};
+
+export const registerAuthor = async (authorData) => {
+    try {
+        const response = await API.post('/register/author', authorData);
+        // The API returns a 200/201 on success, which is all we need here.
+        return response.data; 
+    } catch (error) {
+        console.error("Failed to register author:", error);
+        // Throw the error so the component can catch it and display a message.
+        throw error;
+    }
 };
