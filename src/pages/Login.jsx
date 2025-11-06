@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // 🌟 Import Link
+import { useNavigate, Link } from "react-router-dom";
 import { authenticate } from "../services/api/AuthService";
+import { PATHS, USER_ROLES } from "../configs/constants";
 
 export default function Login() {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
@@ -14,24 +15,24 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous error
+    setError("");
     const { username, password } = credentials;
 
     try {
       const userRole = await authenticate(username, password);
 
       switch (userRole) {
-        case "ADMIN":
-          navigate("/admin");
+        case USER_ROLES.ADMIN:
+          navigate(PATHS.ADMIN);
           break;
-        case "STAFF":
-          navigate("/staff");
+        case USER_ROLES.STAFF:
+          navigate(PATHS.STAFF);
           break;
-        case "AUTHOR":
-          navigate("/author");
+        case USER_ROLES.AUTHOR:
+          navigate(PATHS.AUTHOR);
           break;
         default:
-          navigate("/user");
+          navigate(PATHS.USER);
       }
     } catch (err) {
       console.error("Login failed:", err);

@@ -1,14 +1,15 @@
 import API from './api';
+import { API_PATHS } from '../../configs/constants';
 
 export const authenticate = async (username, password) => {
   try {
-    const res = await API.post("/authenticate", { username, password });
+    const res = await API.post(API_PATHS.AUTHENTICATE, { username, password });
 
     const token = res.data.payload.accessToken;
 
     API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const userRes = await API.get("/user");
+    const userRes = await API.get(API_PATHS.USER);
 
     localStorage.setItem("user", JSON.stringify(userRes.data.payload));
 
@@ -21,7 +22,7 @@ export const authenticate = async (username, password) => {
 
 export const signout = async () => {
   try {
-    await API.post("/sign-out");
+    await API.post(API_PATHS.SIGN_OUT);
   } catch (error) {
     console.error("Failed to sign out on server:", error);
   } finally {

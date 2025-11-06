@@ -1,22 +1,23 @@
 import API from './api';
+import { API_PATHS, PATHS } from '../../configs/constants';
 
 export const updateUserInStorage = async () => {
   try {
-    const res = await API.get("/user");
+    const res = await API.get(API_PATHS.USER);
     const updatedUser = res.data.payload;
     localStorage.setItem("user", JSON.stringify(updatedUser));
     return updatedUser;
   } catch (error) {
     console.error("Failed to fetch and update user details:", error);
 
-    globalThis.location.href = '/login';
+    globalThis.location.href = PATHS.LOGIN;
     throw error;
   }
 };
 
 export const updateUserDetails = async (data) => {
   try {
-    const res = await API.put("/user", data);
+    const res = await API.put(API_PATHS.USER, data);
     const updatedUser = res.data.payload;
     localStorage.setItem("user", JSON.stringify(updatedUser));
     return updatedUser;
@@ -28,7 +29,7 @@ export const updateUserDetails = async (data) => {
 
 export const updateUserPassword = async (data) => {
   try {
-    await API.put("/user/password", data);
+    await API.put(API_PATHS.USER + API_PATHS.PASSWORD, data);
     return true;
   } catch (error) {
     console.error("Failed to update password:", error);
@@ -38,7 +39,7 @@ export const updateUserPassword = async (data) => {
 
 export const registerAuthor = async (authorData) => {
     try {
-        const response = await API.post('/register/author', authorData);
+        const response = await API.post(API_PATHS.REGISTER + API_PATHS.AUTHOR, authorData);
         // The API returns a 200/201 on success, which is all we need here.
         return response.data; 
     } catch (error) {

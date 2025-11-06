@@ -1,8 +1,7 @@
-// src/pages/RegisterAuthor.jsx (assuming you put it in a pages directory)
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerAuthor } from "../services/api/UserService";
+import { PATHS } from "../configs/constants";
 
 export default function RegisterAuthor() {
   const navigate = useNavigate();
@@ -68,7 +67,7 @@ export default function RegisterAuthor() {
         orcid: "", ror: "", departmentId: ""
       });
       // Optionally navigate to login after a delay
-      setTimeout(() => navigate("/login"), 3000);
+      setTimeout(() => navigate(PATHS.LOGIN), 3000);
     } catch (err) {
       console.error("Registration failed:", err);
       // Attempt to get a more specific error message from the API response
@@ -244,7 +243,7 @@ export default function RegisterAuthor() {
           <span className="text-sm text-gray-600">
             Already have an account?{" "}
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate(PATHS.LOGIN)}
               className="font-medium text-blue-600 hover:text-blue-500"
             >
               Sign In

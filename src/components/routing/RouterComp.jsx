@@ -1,16 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PATHS, USER_ROLES } from "../../configs/constants";
+
 import ProtectedRouteComp from "./ProtectedRouteComp";
 import NavBarComp from "../NavBarComp";
 import Home from "../../pages/Home";
 import Login from "../../pages/Login";
 import AdminDashboard from "../../pages/AdminDashboard";
-import DepartmentDashboard from "../../pages/DepartmentDashboard";
+import AdminDepartmentDashboard from "../../pages/AdminDepartmentDashboard";
 import StaffDashboard from "../../pages/StaffDashboard";
 import AuthorDashboard from "../../pages/AuthorDashboard";
 import UserPage from "../../pages/UserPage";
 import NotFound from "../../pages/NotFound";
 import RegisterAthor from "../../pages/RegisterAthor";
 import AdminUserDashboard from "../../pages/AdminUserDashboard";
+import DocumentSubmissionPage from "../../pages/DocumentSubmissionPage";
 
 export default function RouterComp() {
   return (
@@ -18,60 +21,68 @@ export default function RouterComp() {
       <NavBarComp />
       <hr />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register-author" element={<RegisterAthor />} />
+        <Route path={PATHS.HOME} element={<Home />} />
+        <Route path={PATHS.LOGIN} element={<Login />} />
+        <Route path={PATHS.REGISTER_AUTHOR} element={<RegisterAthor />} />
 
         <Route
-          path="/admin"
+          path={PATHS.ADMIN}
           element={
-            <ProtectedRouteComp roles={["ADMIN"]}>
+            <ProtectedRouteComp roles={[USER_ROLES.ADMIN]}>
               <AdminDashboard />
             </ProtectedRouteComp>
           }
         />
         <Route
-          path="/admin/department"
+          path={PATHS.ADMIN + PATHS.DEPARTMENT}
           element={
-            <ProtectedRouteComp roles={["ADMIN"]}>
-              <DepartmentDashboard />
+            <ProtectedRouteComp roles={[USER_ROLES.ADMIN]}>
+              <AdminDepartmentDashboard />
             </ProtectedRouteComp>
           }
         />
         <Route
-          path="/admin/user"
+          path={PATHS.ADMIN + PATHS.USER}
           element={
-            <ProtectedRouteComp roles={["ADMIN"]}>
+            <ProtectedRouteComp roles={[USER_ROLES.ADMIN]}>
               <AdminUserDashboard />
             </ProtectedRouteComp>
           }
         />
         <Route
-          path="/staff"
+          path={PATHS.STAFF}
           element={
-            <ProtectedRouteComp roles={["STAFF"]}>
+            <ProtectedRouteComp roles={[USER_ROLES.STAFF]}>
               <StaffDashboard />
             </ProtectedRouteComp>
           }
         />
         <Route
-          path="/author"
+          path={PATHS.AUTHOR}
           element={
-            <ProtectedRouteComp roles={["AUTHOR"]}>
+            <ProtectedRouteComp roles={[USER_ROLES.AUTHOR]}>
               <AuthorDashboard />
             </ProtectedRouteComp>
           }
         />
         <Route
-          path="/user"
+          path={PATHS.AUTHOR + PATHS.DOCUMENT + PATHS.SUBMIT}
           element={
-            <ProtectedRouteComp roles={["ADMIN", "STAFF", "AUTHOR"]}>
+            <ProtectedRouteComp roles={[USER_ROLES.AUTHOR]}>
+              <DocumentSubmissionPage />
+            </ProtectedRouteComp>
+          }
+        />
+        <Route
+          path={PATHS.USER}
+          element={
+            <ProtectedRouteComp roles={[USER_ROLES.ADMIN, USER_ROLES.STAFF, USER_ROLES.AUTHOR]}>
               <UserPage />
             </ProtectedRouteComp>
           }
         />
 
-        <Route path="*" element={<NotFound />} />
+        <Route path={PATHS.ALL} element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

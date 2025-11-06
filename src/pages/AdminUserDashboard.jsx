@@ -6,32 +6,23 @@ import {
   deleteUser,
   resetPassword,
 } from "../services/api/AdminUserService";
-import { getPublicDepartmentNonBlocked } from "../services/api/DepartmentService";
+import { getPublicDepartmentNonBlocked } from "../services/api/PublicService";
 
-import MessageDisplay from "../components/commons/MessageDisplay";
+import DashboardLayout from "../components/dashboards/DashboardLayout";
 import UserRegistrationForm from "../components/dashboards/user/UserRegistrationForm";
 import UsersTable from "../components/dashboards/user/UsersTable";
 import PasswordResetModal from "../components/dashboards/user/PasswordResetModal";
 
-const initialFormData = {
-  username: "",
-  password: "",
-  firstName: "",
-  lastName: "",
-  middleName: "",
-  departmentId: null,
-};
-const PAGE_LIMIT = 10;
-const USER_ROLES = ["ALL", "ADMIN", "STAFF", "AUTHOR"];
+import { INITIAL_USER_FORM_DATA, LIST_LIMIT, USER_ROLE_FILTER_LIST, USER_ROLE_FILTER_OPTIONS} from "../configs/constants";
 
 export default function AdminUserDashboard() {
   const [users, setUsers] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(INITIAL_USER_FORM_DATA);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [searchKey, setSearchKey] = useState("");
-  const [userRoleFilter, setUserRoleFilter] = useState("ALL");
+  const [userRoleFilter, setUserRoleFilter] = useState(USER_ROLE_FILTER_OPTIONS.ALL);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -43,8 +34,8 @@ export default function AdminUserDashboard() {
   const fetchUsers = useCallback(async (key, role, page) => {
     try {
       setLoading(true);
-      const roleToSearch = role === "ALL" ? undefined : role; 
-      const data = await searchUsers(key, roleToSearch, PAGE_LIMIT, page);
+      const roleToSearch = role === USER_ROLE_FILTER_OPTIONS.ALL ? undefined : role;
+      const data = await searchUsers(key, roleToSearch, LIST_LIMIT, page);
       setUsers(data.clientList || []);
       setTotalCount(data.totalCount);
       setPageCount(data.pageCount);
@@ -117,7 +108,7 @@ export default function AdminUserDashboard() {
     try {
       await registerStaff(formData);
       setMessage("✅ Staff user registered successfully.");
-      setFormData(prev => ({ ...initialFormData, departmentId: departments[0]?.id || null }));
+      setFormData(prev => ({ ...INITIAL_USER_FORM_DATA, departmentId: departments[0]?.id || null }));
       fetchUsers(searchKey, currentPage);
     } catch (error) {
       console.error("Error registering user:", error);
@@ -210,13 +201,11 @@ export default function AdminUserDashboard() {
   }
 
   return (
-    <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
-        👤 User Management Dashboard
-      </h1>
-
-      <MessageDisplay message={message} />
-
+    <DashboardLayout
+      title="User Management Dashboard"
+      icon="👤"
+      message={message}
+    >
       <UserRegistrationForm
         formData={formData}
         handleInputChange={handleInputChange}
@@ -230,7 +219,7 @@ export default function AdminUserDashboard() {
         setSearchKey={setSearchKey}
         userRoleFilter={userRoleFilter}
         setUserRoleFilter={handleRoleFilterChange}
-        userRoles={USER_ROLES}
+        userRoles={USER_ROLE_FILTER_LIST}
         setCurrentPage={setCurrentPage}
         totalCount={totalCount}
         currentPage={currentPage}
@@ -248,9 +237,9 @@ export default function AdminUserDashboard() {
           setNewPassword={setNewPassword}
           closePasswordModal={closePasswordModal}
           handlePasswordReset={handlePasswordReset}
-          message={message} // Pass message for display inside the modal
+          message={message}
         />
       )}
-    </div>
+    </DashboardLayout>
   );
 }

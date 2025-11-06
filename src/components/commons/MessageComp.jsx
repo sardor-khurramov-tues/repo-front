@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function MessageDisplay({ message }) {
+export default function MessageComp({ message }) {
     if (!message) return null;
 
     const isSuccess = message.startsWith("✅");
@@ -17,6 +17,6 @@ export default function MessageDisplay({ message }) {
     );
 }
 
-MessageDisplay.propTypes = {
+MessageComp.propTypes = {
     message: PropTypes.string,
 };

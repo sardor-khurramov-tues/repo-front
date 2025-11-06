@@ -1,10 +1,11 @@
 import API from './api';
+import { API_PATHS } from '../../configs/constants';
 
-const BASE_URL = '/admin/user';
+const BASE_URL = API_PATHS.ADMIN + API_PATHS.USER;
 
 export const searchUsers = async (key, userRole, limit, page) => {
   try {
-    const response = await API.get(`${BASE_URL}/find-by`, {
+    const response = await API.get(BASE_URL + API_PATHS.FIND_BY, {
       params: {
         key: key || '',
         userRole: userRole || undefined, // Only send if a role is selected
@@ -22,7 +23,7 @@ export const searchUsers = async (key, userRole, limit, page) => {
 
 export const registerStaff = async (userData) => {
   try {
-    const response = await API.post(`${BASE_URL}/register/staff`, userData);
+    const response = await API.post(BASE_URL + API_PATHS.REGISTER + API_PATHS.STAFF, userData);
     return response.data; // You might want to return the whole response for context
   } catch (error) {
     console.error("Failed to register staff:", error);
@@ -32,7 +33,7 @@ export const registerStaff = async (userData) => {
 
 export const blockUser = async (userId, isBlocked) => {
   try {
-    await API.put(`${BASE_URL}/${userId}/block`, { isBlocked });
+    await API.put(BASE_URL + '/' + userId + API_PATHS.BLOCK, { isBlocked });
   } catch (error) {
     console.error(`Failed to update block status for user ${userId}:`, error);
     throw error;
@@ -41,7 +42,7 @@ export const blockUser = async (userId, isBlocked) => {
 
 export const deleteUser = async (userId) => {
   try {
-    await API.delete(`${BASE_URL}/${userId}`);
+    await API.delete(BASE_URL + '/' + userId);
   } catch (error) {
     console.error(`Failed to delete user ${userId}:`, error);
     throw error;
@@ -50,7 +51,7 @@ export const deleteUser = async (userId) => {
 
 export const resetPassword = async (userId, newPassword) => {
   try {
-    await API.put(`${BASE_URL}/${userId}/password`, { newPassword });
+    await API.put(BASE_URL + '/' + userId + API_PATHS.PASSWORD, { newPassword });
   } catch (error) {
     console.error(`Failed to reset password for user ${userId}:`, error);
     throw error;
