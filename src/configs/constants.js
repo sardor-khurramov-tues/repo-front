@@ -12,7 +12,7 @@ export const PATHS = {
   AUTHOR: "/author",
   DEPARTMENT: "/department",
   DOCUMENT: "/document",
-  SUBMIT: "/submit",
+  SUBMISSION: "/submission",
 };
 
 export const API_PATHS = {

@@ -66,7 +66,7 @@ export default function RouterComp() {
           }
         />
         <Route
-          path={PATHS.AUTHOR + PATHS.DOCUMENT + PATHS.SUBMIT}
+          path={PATHS.AUTHOR + PATHS.DOCUMENT + PATHS.SUBMISSION}
           element={
             <ProtectedRouteComp roles={[USER_ROLES.AUTHOR]}>
               <DocumentSubmissionPage />

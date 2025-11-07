@@ -144,7 +144,7 @@ export default function DocForm({ docType }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-8 max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl space-y-8 border border-gray-100"
+      className="p-8 max-w-4xl mx-auto bg-white space-y-8"
     >
       <h2 className="text-3xl font-bold text-gray-800 border-b pb-3">
         Submit New Document:{" "}
