@@ -61,7 +61,7 @@ export const submitReport = async (data) => {
   }
 };
 
-export const searchDocumentBySubmitter = async (key, limit, page) => {
+export const searchDocumentAsSubmitter = async (key, limit, page) => {
   try {
     const response = await API.get(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + API_PATHS.FIND_BY, {
       params: {
@@ -74,6 +74,106 @@ export const searchDocumentBySubmitter = async (key, limit, page) => {
     return response.data.payload;
   } catch (error) {
     console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const getDocumentAsSubmitter = async (id) => {
+  try {
+    const response = await API.get(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id);
+    return response.data.payload;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const deleteDocumentAsSubmitter = async (id) => {
+  try {
+    await API.delete(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id);
+    return true;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const addContributorToDocument = async (id, appUserId, docRole) => {
+  try {
+    await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.CONTRIBUTOR, { appUserId, docRole });
+    return true;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const removeContributorFromDocument = async (id) => {
+  try {
+    await API.delete(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + API_PATHS.CONTRIBUTOR + "/" + id);
+    return true;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const updateDissertation = async (id, data) => {
+  try {
+    const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.DISSERTATION, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to submit dissertation:", error);
+    throw error;
+  }
+};
+
+export const updateConferenceProceedings = async (id, data) => {
+  try {
+    const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.CONFERENCE_PROCEEDINGS, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to submit conference proceedings:", error);
+    throw error;
+  }
+};
+
+export const updateConferencePaper = async (id, data) => {
+  try {
+    const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.CONFERENCE_PAPER, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to submit conference paper:", error);
+    throw error;
+  }
+};
+
+export const updateBook = async (id, data) => {
+  try {
+    const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.BOOK, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to submit book:", error);
+    throw error;
+  }
+};
+
+export const updateBookChapter = async (id, data) => {
+  try {
+    const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.BOOK_CHAPTER, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to submit book chapter:", error);
+    throw error;
+  }
+};
+
+export const updateReport = async (id, data) => {
+  try {
+    const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.REPORT, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to submit report:", error);
     throw error;
   }
 };

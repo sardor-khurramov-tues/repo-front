@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { searchDocumentBySubmitter } from "../services/api/DocumentService";
+import { searchDocumentAsSubmitter } from "../services/api/DocumentService";
 import { format } from "date-fns";
 
 const LIMIT = 10; // Items per page
@@ -22,7 +22,7 @@ export default function AuthorDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const data = await searchDocumentBySubmitter(key, LIMIT, page);
+      const data = await searchDocumentAsSubmitter(key, LIMIT, page);
       setDocuments(data.documentList || []);
       setTotalCount(data.totalCount || 0);
       setCurrentPage(page);

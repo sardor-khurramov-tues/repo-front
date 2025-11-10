@@ -2,6 +2,7 @@ export const APP_NAME = "TUES Repo";
 
 export const PATHS = {
   ALL: "*",
+  ID_PATH_VARIABLE: "/:id",
   HOME: "/",
   LOGIN: "/login",
   REGISTER: "/register",
@@ -29,6 +30,7 @@ export const API_PATHS = {
   BLOCK: "/block",
   PASSWORD: "/password",
   DOCUMENT: "/document",
+  CONTRIBUTOR: "/contributor",
   DISSERTATION: "/dissertation",
   CONFERENCE_PROCEEDINGS: "/conference-proceedings",
   CONFERENCE_PAPER: "/conference-paper",

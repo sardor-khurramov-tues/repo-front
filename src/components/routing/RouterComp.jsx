@@ -14,6 +14,7 @@ import NotFound from "../../pages/NotFound";
 import RegisterAthor from "../../pages/RegisterAthor";
 import AdminUserDashboard from "../../pages/AdminUserDashboard";
 import DocumentSubmissionPage from "../../pages/DocumentSubmissionPage";
+import AuthorDocumentDetailPage from "../../pages/AuthorDocumentDetailPage";
 
 export default function RouterComp() {
   return (
@@ -70,6 +71,14 @@ export default function RouterComp() {
           element={
             <ProtectedRouteComp roles={[USER_ROLES.AUTHOR]}>
               <DocumentSubmissionPage />
+            </ProtectedRouteComp>
+          }
+        />
+        <Route
+          path={PATHS.AUTHOR + PATHS.DOCUMENT + PATHS.ID_PATH_VARIABLE}
+          element={
+            <ProtectedRouteComp roles={[USER_ROLES.AUTHOR]}>
+              <AuthorDocumentDetailPage />
             </ProtectedRouteComp>
           }
         />
