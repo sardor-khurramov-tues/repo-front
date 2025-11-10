@@ -60,3 +60,20 @@ export const submitReport = async (data) => {
     throw error;
   }
 };
+
+export const searchDocumentBySubmitter = async (key, limit, page) => {
+  try {
+    const response = await API.get(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + API_PATHS.FIND_BY, {
+      params: {
+        key: key || '',
+        limit,
+        page,
+      },
+    });
+    // The structure is { code: 0, message: "success", payload: {...} }
+    return response.data.payload;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};

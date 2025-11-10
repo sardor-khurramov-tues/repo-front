@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerAuthor } from "../services/api/UserService";
 import { PATHS } from "../configs/constants";
+import { getPublicFacultyNonBlocked } from "../services/api/PublicService";
 
 export default function RegisterAuthor() {
   const navigate = useNavigate();
@@ -12,12 +13,37 @@ export default function RegisterAuthor() {
     lastName: "",
     middleName: "",
     orcid: "",
-    ror: "",
-    departmentId: "", // Will be a string for input, converted to Long/number on submit
+    ror: "01tts0094",
+    departmentId: "", // Will hold the selected department's ID as a string
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // New state for departments data and its loading/error states
+  const [departments, setDepartments] = useState([]);
+  const [departmentsLoading, setDepartmentsLoading] = useState(true);
+  const [departmentsError, setDepartmentsError] = useState(null);
+
+  // --- Fetch Departments on Component Mount ---
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        setDepartmentsLoading(true);
+        const data = await getPublicFacultyNonBlocked();
+        // Assuming data is an array of department objects
+        setDepartments(data);
+        setDepartmentsError(null);
+      } catch (err) {
+        console.error("Failed to fetch departments:", err);
+        setDepartmentsError("Could not load faculty departments.");
+      } finally {
+        setDepartmentsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +59,9 @@ export default function RegisterAuthor() {
     const requiredFields = ["email", "firstName", "lastName"];
     for (const field of requiredFields) {
       if (!formData[field]) {
-        setError(`Please fill in the required field: ${field}`);
+        // More user-friendly error for departmentId
+        const fieldName = field === "departmentId" ? "Department" : field;
+        setError(`Please fill in the required field: ${fieldName}`);
         return;
       }
     }
@@ -78,6 +106,13 @@ export default function RegisterAuthor() {
     }
   };
 
+  let departmentPlaceholder = "Select your department";
+  if (departmentsLoading) {
+    departmentPlaceholder = "Loading departments...";
+  } else if (departmentsError) {
+    departmentPlaceholder = "Error loading";
+  }
+
   const inputClass = "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
   const labelClass = "block text-sm font-medium text-gray-700";
 
@@ -94,9 +129,17 @@ export default function RegisterAuthor() {
           </div>
         )}
 
+        {/* Global error message display */}
         {error && (
           <div className="mb-4 rounded-md bg-red-100 px-4 py-2 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {/* Department fetch error message */}
+        {departmentsError && (
+          <div className="mb-4 rounded-md bg-red-100 px-4 py-2 text-sm text-red-700">
+            {departmentsError}
           </div>
         )}
 
@@ -165,19 +208,27 @@ export default function RegisterAuthor() {
               />
             </div>
 
-            {/* Department ID (Optional, Number/Long) */}
+            {/* Department Selection (Modified to use Select) */}
             <div>
-              <label htmlFor="departmentId" className={labelClass}>Department ID</label>
-              <input
+              <label htmlFor="departmentId" className={labelClass}>Department</label>
+              <select
                 id="departmentId"
                 name="departmentId"
-                type="number"
                 value={formData.departmentId}
                 onChange={handleChange}
-                min="1" // Assuming IDs start from 1
+                disabled={departmentsLoading || departmentsError || departments.length === 0}
                 className={inputClass}
-                placeholder="e.g., 42"
-              />
+              >
+                <option value="" disabled>
+                  {departmentPlaceholder}
+                </option>
+                {departments.map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {/* Display the English name if available, otherwise use a fallback */}
+                    {department.nameEn || department.nameUz || `ID: ${department.id}`}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* HEMIS ID (Optional, max 31) */}
@@ -224,7 +275,7 @@ export default function RegisterAuthor() {
                 // ROR pattern is complex, rely on backend or add a more robust check later.
                 // For now, simple text input.
                 className={inputClass}
-                placeholder="08pqpwd24 (Optional)"
+                placeholder="01tts0094 (Optional)"
               />
             </div>
 
@@ -232,7 +283,7 @@ export default function RegisterAuthor() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || departmentsLoading || departmentsError} // Disable if registering or loading/error
             className="w-full rounded-md bg-green-600 px-4 py-2 font-medium text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:bg-green-400"
           >
             {loading ? "Registering..." : "Register"}
