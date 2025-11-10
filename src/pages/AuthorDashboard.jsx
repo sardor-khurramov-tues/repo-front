@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { searchDocumentAsSubmitter } from "../services/api/DocumentService";
+import { useState, useEffect, useCallback } from "react";
+// Import the delete function from the service file
+import { searchDocumentAsSubmitter, deleteDocumentAsSubmitter } from "../services/api/DocumentService";
 import { format } from "date-fns";
 
 const LIMIT = 10; // Items per page
@@ -16,9 +17,10 @@ export default function AuthorDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+  const [deleteStatus, setDeleteStatus] = useState({ id: null, loading: false, error: null });
 
-  // Function to fetch documents
-  const fetchDocuments = async (key, page) => {
+  // Function to fetch documents (Wrapped in useCallback for useEffect dependency)
+  const fetchDocuments = useCallback(async (key, page) => {
     setLoading(true);
     setError(null);
     try {
@@ -34,26 +36,61 @@ export default function AuthorDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // Empty dependency array means this function is created once
 
   // 1. useEffect runs ONLY when searchKey changes (or on initial load)
   useEffect(() => {
     // When searchKey updates (via handleSubmit or initial load), fetch documents from page 0
     fetchDocuments(searchKey, 0);
-  }, [searchKey]);
+  }, [searchKey, fetchDocuments]);
   
   // 2. Handle Search Button Click or Form Submit
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior (if wrapped in a form)
-    // Update the searchKey state, which triggers the useEffect hook
-    setSearchKey(inputKey); 
-    setCurrentPage(0); // Always reset to the first page on a new search
+    e.preventDefault(); // Prevent default form submission behavior
+    // Only update searchKey if the input key is different from the current search key
+    if (inputKey !== searchKey) {
+        setSearchKey(inputKey); 
+        setCurrentPage(0); // Always reset to the first page on a new search
+    }
+  };
+
+  // 3. Handle Delete Button Click
+  const handleDelete = async (documentId, documentTitle) => {
+    if (!window.confirm(`Are you sure you want to delete the document: "${documentTitle}"?`)) {
+      return;
+    }
+
+    setDeleteStatus({ id: documentId, loading: true, error: null });
+
+    try {
+      await deleteDocumentAsSubmitter(documentId);
+      setDeleteStatus({ id: null, loading: false, error: null });
+      
+      // Successfully deleted. Re-fetch documents for the current page.
+      // We must check if the current page is now empty and adjust.
+      let pageToFetch = currentPage;
+
+      // If the current page becomes empty after deletion and it's not the first page,
+      // move to the previous page.
+      if (documents.length === 1 && currentPage > 0) {
+        pageToFetch = currentPage - 1;
+      }
+      
+      // Re-fetch the data with the potentially new page index
+      fetchDocuments(searchKey, pageToFetch);
+
+    } catch (err) {
+      console.error("Delete failed:", err);
+      setDeleteStatus({ id: documentId, loading: false, error: "Failed to delete document." });
+      // Optionally re-fetch on error to ensure data consistency
+      fetchDocuments(searchKey, currentPage);
+    }
   };
 
   // Handle pagination change
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < Math.ceil(totalCount / LIMIT)) {
-      fetchDocuments(searchKey, newPage); // Use the *official* searchKey, not the inputKey
+      fetchDocuments(searchKey, newPage); // Use the *official* searchKey
     }
   };
 
@@ -61,7 +98,7 @@ export default function AuthorDashboard() {
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      {/* Header and Links */}
+      {/* Header and Links (omitted for brevity) */}
       <header className="mb-8 border-b pb-4">
         <h1 className="text-4xl font-extrabold text-indigo-700">
           📜 Author Dashboard
@@ -85,7 +122,7 @@ export default function AuthorDashboard() {
       
       ---
 
-      {/* Search Bar (Now wrapped in a form for button/Enter key submission) */}
+      {/* Search Bar */}
       <section className="mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           🔍 My Submitted Documents
@@ -119,7 +156,14 @@ export default function AuthorDashboard() {
       
       ---
 
-      {/* Document List (omitted for brevity, remains the same) */}
+      {/* Delete Error Notification */}
+      {deleteStatus.error && (
+        <div className="text-center p-4 mb-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          **Error deleting document {deleteStatus.id}:** {deleteStatus.error}
+        </div>
+      )}
+
+      {/* Document List */}
       <section className="bg-white p-4 rounded-lg shadow-xl">
         {loading && (
           <div className="text-center p-8 text-indigo-500 font-medium">Loading documents...</div>
@@ -185,16 +229,21 @@ export default function AuthorDashboard() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <Link
-                        to={`/author/document/${doc.id}/edit`}
+                        to={`/author/document/${doc.id}`}
                         className="text-indigo-600 hover:text-indigo-900 transition duration-150 ease-in-out mr-4"
                       >
                         Edit
                       </Link>
                       <button
-                        onClick={() => alert(`Deleting document ${doc.id}`)}
-                        className="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
+                        onClick={() => handleDelete(doc.id, doc.title)}
+                        disabled={deleteStatus.loading && deleteStatus.id === doc.id}
+                        className={`transition duration-150 ease-in-out ${
+                            (deleteStatus.loading && deleteStatus.id === doc.id)
+                              ? "text-gray-500 cursor-not-allowed"
+                              : "text-red-600 hover:text-red-900"
+                        }`}
                       >
-                        Delete
+                        {(deleteStatus.loading && deleteStatus.id === doc.id) ? "Deleting..." : "Delete"}
                       </button>
                     </td>
                   </tr>
@@ -205,7 +254,7 @@ export default function AuthorDashboard() {
         )}
       </section>
 
-      {/* Pagination (omitted for brevity, remains the same) */}
+      {/* Pagination */}
       {!loading && documents.length > 0 && (
         <div className="flex justify-between items-center mt-6">
           <p className="text-sm text-gray-700">
