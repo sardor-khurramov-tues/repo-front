@@ -1,7 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDocumentAsSubmitter, deleteDocumentAsSubmitter, removeContributorFromDocument } from '../services/api/DocumentService';
-import DocumentDetailView from '../features/document/DocumentDetailView';
+import {
+    getDocumentAsSubmitter,
+    deleteDocumentAsSubmitter,
+    removeContributorFromDocument,
+    addContributorToDocument
+} from '@/services/api/DocumentService';
+import { searchPublicAuthor } from '@/services/api/PublicService';
+import DocumentDetailView from '@/features/document/DocumentDetailView';
+
+// Define the initial state for the contributor search
+const initialAuthorSearchState = {
+    key: '',
+    results: [],
+    loading: false,
+    error: null,
+};
 
 export default function AuthorDocumentDetailPage() {
     const { id } = useParams();
@@ -11,7 +25,11 @@ export default function AuthorDocumentDetailPage() {
     const [error, setError] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState(null);
-    const [isRemovingContributor, setIsRemovingContributor] = useState(false); // New state for contributor removal
+    const [isRemovingContributor, setIsRemovingContributor] = useState(false);
+    
+    // NEW: State for Contributor Search
+    const [authorSearch, setAuthorSearch] = useState(initialAuthorSearchState);
+    const [isAddingContributor, setIsAddingContributor] = useState(false); // NEW: State for adding
 
     // --- Data Fetching Function ---
     const fetchDocument = useCallback(async () => {
@@ -33,7 +51,54 @@ export default function AuthorDocumentDetailPage() {
         fetchDocument();
     }, [fetchDocument]);
 
-    // --- Document Deletion Handler ---
+    // --- Author Search Handler (NEW) ---
+    const handleSearchAuthor = useCallback(async (searchKey) => {
+        if (!searchKey) {
+            setAuthorSearch(initialAuthorSearchState);
+            return;
+        }
+
+        setAuthorSearch(prev => ({ ...prev, loading: true, error: null, key: searchKey }));
+
+        try {
+            // Note: Using sensible defaults for limit and page
+            const data = await searchPublicAuthor(searchKey, 10, 0); 
+            setAuthorSearch(prev => ({ 
+                ...prev, 
+                results: data.clientList || [], 
+                loading: false 
+            }));
+        } catch (err) {
+            setAuthorSearch(prev => ({ 
+                ...prev, 
+                error: "Failed to search authors. Try again.", 
+                loading: false 
+            }));
+            console.error("Search Author Error:", err);
+        }
+    }, []);
+
+    // --- Contributor Addition Handler (NEW) ---
+    const handleAddContributor = async (appUserId, docRole) => {
+        if (!documentData) return;
+
+        setIsAddingContributor(true);
+        try {
+            await addContributorToDocument(id, appUserId, docRole);
+            alert("Contributor added successfully!");
+            // Refresh document to show the new contributor
+            await fetchDocument(); 
+            // Reset search state
+            setAuthorSearch(initialAuthorSearchState);
+        } catch (err) {
+            alert("Failed to add contributor. Please try again.");
+            console.error("Add Contributor Error:", err);
+        } finally {
+            setIsAddingContributor(false);
+        }
+    };
+    
+    // --- Document Deletion Handler (EXISTING) ---
     const handleDelete = async () => {
         if (!window.confirm("Are you sure you want to delete this document? This action cannot be undone.")) {
             return;
@@ -44,7 +109,6 @@ export default function AuthorDocumentDetailPage() {
         try {
             await deleteDocumentAsSubmitter(id);
             alert("Document deleted successfully!");
-            // Redirect user to the list of documents
             navigate('/author/documents');
         } catch (err) {
             setDeleteError("Failed to delete the document.");
@@ -53,7 +117,7 @@ export default function AuthorDocumentDetailPage() {
         }
     };
 
-    // --- Contributor Removal Handler (NEW) ---
+    // --- Contributor Removal Handler (EXISTING) ---
     const handleRemoveContributor = async (contributorId) => {
         if (!window.confirm("Are you sure you want to remove this contributor from the document?")) {
             return;
@@ -63,8 +127,7 @@ export default function AuthorDocumentDetailPage() {
         try {
             await removeContributorFromDocument(contributorId);
             alert("Contributor removed successfully!");
-            // Refresh data to show the updated contributor list
-            await fetchDocument(); 
+            await fetchDocument();
         } catch (err) {
             alert("Failed to remove contributor. Please try again.");
             console.error("Remove Contributor Error:", err);
@@ -73,7 +136,7 @@ export default function AuthorDocumentDetailPage() {
         }
     };
 
-    // --- Loading State ---
+    // --- Loading, Error, Not Found States (EXISTING) ---
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -88,7 +151,6 @@ export default function AuthorDocumentDetailPage() {
         );
     }
 
-    // --- Error State ---
     if (error) {
         return (
             <div className="p-8 bg-red-100 border-l-4 border-red-500 text-red-700 min-h-screen">
@@ -98,7 +160,6 @@ export default function AuthorDocumentDetailPage() {
         );
     }
 
-    // --- Not Found State ---
     if (!documentData) {
         return (
             <div className="p-8 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 min-h-screen">
@@ -116,8 +177,14 @@ export default function AuthorDocumentDetailPage() {
             isDeleting={isDeleting}
             deleteError={deleteError}
             handleDelete={handleDelete}
-            handleRemoveContributor={handleRemoveContributor} // New prop
-            isRemovingContributor={isRemovingContributor} // New prop
+            handleRemoveContributor={handleRemoveContributor}
+            isRemovingContributor={isRemovingContributor}
+            
+            // NEW PROPS
+            authorSearch={authorSearch}
+            handleSearchAuthor={handleSearchAuthor}
+            handleAddContributor={handleAddContributor}
+            isAddingContributor={isAddingContributor}
         />
     );
 }
