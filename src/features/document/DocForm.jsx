@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   getPublicDepartmentNonBlocked,
   searchPublicAuthor,
-} from "../../services/api/PublicService";
+} from "@/services/api/PublicService";
 import {
   submitDissertation,
   submitConferenceProceedings,
@@ -11,9 +11,9 @@ import {
   submitBook,
   submitBookChapter,
   submitReport,
-} from "../../services/api/DocumentService";
-import { DOC_ROLES } from "../../configs/constants";
-import ContributorSelector from "../commons/ContributorSelector";
+} from "@/services/api/DocumentService";
+import { DOC_ROLES } from "@/configs/constants";
+import ContributorSelector from "./ContributorSelector";
 
 const submitMap = {
   DISSERTATION: submitDissertation,

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Message from '../commons/MessageComp';
+import Message from './MessageComp';
 
 export default function DashboardLayout({ title, icon, message, children }) {
     return (

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { PATHS } from "../../configs/constants";
+import { PATHS } from "@/configs/constants";
 import PropTypes from 'prop-types';
 
 export default function ProtectedRouteComp({ children, roles }) {

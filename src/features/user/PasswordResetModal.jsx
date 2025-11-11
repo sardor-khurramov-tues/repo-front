@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MessageComp from '../../commons/MessageComp';
+import MessageComp from '@/components/MessageComp';
 
 export default function PasswordResetModal({
     userToReset, newPassword, setNewPassword, closePasswordModal, handlePasswordReset, message

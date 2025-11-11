@@ -1,20 +1,20 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { PATHS, USER_ROLES } from "../../configs/constants";
+import { PATHS, USER_ROLES } from "@/configs/constants";
 
 import ProtectedRouteComp from "./ProtectedRouteComp";
-import NavBarComp from "../NavBarComp";
-import Home from "../../pages/Home";
-import Login from "../../pages/Login";
-import AdminDashboard from "../../pages/AdminDashboard";
-import AdminDepartmentDashboard from "../../pages/AdminDepartmentDashboard";
-import StaffDashboard from "../../pages/StaffDashboard";
-import AuthorDashboard from "../../pages/AuthorDashboard";
-import UserPage from "../../pages/UserPage";
-import NotFound from "../../pages/NotFound";
-import RegisterAthor from "../../pages/RegisterAthor";
-import AdminUserDashboard from "../../pages/AdminUserDashboard";
-import DocumentSubmissionPage from "../../pages/DocumentSubmissionPage";
-import AuthorDocumentDetailPage from "../../pages/AuthorDocumentDetailPage";
+import NavBarComp from "@/components/NavBarComp";
+import Home from "@/pages/Home";
+import Login from "@/pages/Login";
+import AdminDashboard from "@/pages/AdminDashboard";
+import AdminDepartmentDashboard from "@/pages/AdminDepartmentDashboard";
+import StaffDashboard from "@/pages/StaffDashboard";
+import AuthorDashboard from "@/pages/AuthorDashboard";
+import UserPage from "@/pages/UserPage";
+import NotFound from "@/pages/NotFound";
+import RegisterAthor from "@/pages/RegisterAthor";
+import AdminUserDashboard from "@/pages/AdminUserDashboard";
+import DocumentSubmissionPage from "@/pages/DocumentSubmissionPage";
+import AuthorDocumentDetailPage from "@/pages/AuthorDocumentDetailPage";
 
 export default function RouterComp() {
   return (

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDocumentAsSubmitter, deleteDocumentAsSubmitter } from '../services/api/DocumentService';
-import DocumentDetailView from '../components/DocumentDetailView';
+import { getDocumentAsSubmitter, deleteDocumentAsSubmitter, removeContributorFromDocument } from '../services/api/DocumentService';
+import DocumentDetailView from '../features/document/DocumentDetailView';
 
 export default function AuthorDocumentDetailPage() {
     const { id } = useParams();
@@ -11,27 +11,29 @@ export default function AuthorDocumentDetailPage() {
     const [error, setError] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState(null);
+    const [isRemovingContributor, setIsRemovingContributor] = useState(false); // New state for contributor removal
+
+    // --- Data Fetching Function ---
+    const fetchDocument = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data = await getDocumentAsSubmitter(id);
+            setDocumentData(data);
+        } catch (err) {
+            setError("Failed to load document details. Please check the document ID.");
+            console.error("Fetch Document Error:", err);
+        } finally {
+            setLoading(false);
+        }
+    }, [id]);
 
     // --- Data Fetching Effect ---
     useEffect(() => {
-        const fetchDocument = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const data = await getDocumentAsSubmitter(id);
-                setDocumentData(data);
-            } catch (err) {
-                setError("Failed to load document details. Please check the document ID.");
-                console.error("Fetch Document Error:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchDocument();
-    }, [id]);
+    }, [fetchDocument]);
 
-    // --- Deletion Handler ---
+    // --- Document Deletion Handler ---
     const handleDelete = async () => {
         if (!window.confirm("Are you sure you want to delete this document? This action cannot be undone.")) {
             return;
@@ -48,6 +50,26 @@ export default function AuthorDocumentDetailPage() {
             setDeleteError("Failed to delete the document.");
             console.error("Delete Document Error:", err);
             setIsDeleting(false);
+        }
+    };
+
+    // --- Contributor Removal Handler (NEW) ---
+    const handleRemoveContributor = async (contributorId) => {
+        if (!window.confirm("Are you sure you want to remove this contributor from the document?")) {
+            return;
+        }
+
+        setIsRemovingContributor(true);
+        try {
+            await removeContributorFromDocument(contributorId);
+            alert("Contributor removed successfully!");
+            // Refresh data to show the updated contributor list
+            await fetchDocument(); 
+        } catch (err) {
+            alert("Failed to remove contributor. Please try again.");
+            console.error("Remove Contributor Error:", err);
+        } finally {
+            setIsRemovingContributor(false);
         }
     };
 
@@ -94,6 +116,8 @@ export default function AuthorDocumentDetailPage() {
             isDeleting={isDeleting}
             deleteError={deleteError}
             handleDelete={handleDelete}
+            handleRemoveContributor={handleRemoveContributor} // New prop
+            isRemovingContributor={isRemovingContributor} // New prop
         />
     );
 }

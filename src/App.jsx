@@ -1,5 +1,5 @@
 import React from "react";
-import RouterComp from "./components/routing/RouterComp";
+import RouterComp from "./routing/RouterComp";
 
 function App() {
   return (

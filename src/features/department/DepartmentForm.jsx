@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { DEPARTMENT_TYPE_LIST } from '../../../configs/constants';
+import { DEPARTMENT_TYPE_LIST } from '@/configs/constants';
 
 export default function DepartmentForm({ formData, editingId, onChange, onSubmit, onCancel }) {
     const handleChange = (e) => {

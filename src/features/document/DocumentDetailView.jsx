@@ -7,7 +7,7 @@ const formatContributorName = (user) => {
     return `${user.firstName || ''} ${user.lastName || ''} (${user.username})`;
 };
 
-// Helper to render a detail item (Moved outside of the main functional component)
+// Helper to render a detail item
 const DetailItem = ({ label, value }) => (
     <div className="p-4 border-b last:border-b-0">
         <p className="text-sm font-medium text-gray-500">{label}</p>
@@ -22,7 +22,10 @@ DetailItem.propTypes = {
 
 
 // The main view component that receives all data and handlers as props
-export default function DocumentDetailView({ id, documentData, isDeleting, deleteError, handleDelete }) {
+export default function DocumentDetailView({ id, documentData, isDeleting, deleteError, handleDelete, handleRemoveContributor, isRemovingContributor }) {
+    
+    // Check if the current user is the submitter (to prevent self-removal)
+    const isContributorSelf = (contributor) => contributor.appUser.id === documentData.submitter.id;
     
     return (
         <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -63,6 +66,12 @@ export default function DocumentDetailView({ id, documentData, isDeleting, delet
                         **Deletion Failed:** {deleteError}
                     </div>
                 )}
+                {isRemovingContributor && (
+                    <div className="p-4 bg-blue-100 text-blue-700 text-sm font-medium">
+                        **Removing Contributor...** Please wait.
+                    </div>
+                )}
+
 
                 {/* Main Details Grid */}
                 <div className="p-6">
@@ -90,12 +99,28 @@ export default function DocumentDetailView({ id, documentData, isDeleting, delet
                         {documentData.contributorSet && documentData.contributorSet.length > 0 ? (
                             documentData.contributorSet.map((contributor) => (
                                 <div key={contributor.id} className="p-3 bg-gray-50 rounded-md shadow-sm flex justify-between items-center">
-                                    <span className="font-medium text-gray-900">
-                                        {formatContributorName(contributor.appUser)}
-                                    </span>
-                                    <span className="text-sm font-semibold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">
-                                        {contributor.docRole}
-                                    </span>
+                                    <div className="flex items-center space-x-3">
+                                        <span className="font-medium text-gray-900">
+                                            {formatContributorName(contributor.appUser)}
+                                        </span>
+                                        <span className="text-sm font-semibold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">
+                                            {contributor.docRole}
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Remove Button (NEW) */}
+                                    <button
+                                        onClick={() => handleRemoveContributor(contributor.id)}
+                                        disabled={isRemovingContributor || isContributorSelf(contributor)}
+                                        className={`ml-4 px-3 py-1 text-xs font-medium rounded-md transition duration-150 ease-in-out ${
+                                            isRemovingContributor || isContributorSelf(contributor) 
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            : 'bg-red-500 hover:bg-red-600 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+                                        }`}
+                                        title={isContributorSelf(contributor) ? "Cannot remove the document submitter." : "Remove Contributor"}
+                                    >
+                                        Remove
+                                    </button>
                                 </div>
                             ))
                         ) : (
@@ -120,4 +145,6 @@ DocumentDetailView.propTypes = {
     isDeleting: PropTypes.bool.isRequired,
     deleteError: PropTypes.string,
     handleDelete: PropTypes.func.isRequired,
+    handleRemoveContributor: PropTypes.func.isRequired, // New propType
+    isRemovingContributor: PropTypes.bool.isRequired, // New propType
 };

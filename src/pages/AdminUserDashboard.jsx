@@ -8,10 +8,10 @@ import {
 } from "../services/api/AdminUserService";
 import { getPublicDepartmentNonBlocked } from "../services/api/PublicService";
 
-import DashboardLayout from "../components/dashboards/DashboardLayout";
-import UserRegistrationForm from "../components/dashboards/user/UserRegistrationForm";
-import UsersTable from "../components/dashboards/user/UsersTable";
-import PasswordResetModal from "../components/dashboards/user/PasswordResetModal";
+import DashboardLayout from "../components/DashboardLayout";
+import UserRegistrationForm from "../features/user/UserRegistrationForm";
+import UsersTable from "../features/user/UsersTable";
+import PasswordResetModal from "../features/user/PasswordResetModal";
 
 import { INITIAL_USER_FORM_DATA, LIST_LIMIT, USER_ROLE_FILTER_LIST, USER_ROLE_FILTER_OPTIONS} from "../configs/constants";
 

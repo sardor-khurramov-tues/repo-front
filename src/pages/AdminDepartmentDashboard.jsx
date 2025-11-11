@@ -5,9 +5,9 @@ import {
   updateDepartment,
   deleteDepartment,
 } from "../services/api/DepartmentService";
-import DashboardLayout from "../components/dashboards/DashboardLayout";
-import DepartmentForm from "../components/dashboards/department/DepartmentForm";
-import DepartmentTable from "../components/dashboards/department/DepartmentTable";
+import DashboardLayout from "../components/DashboardLayout";
+import DepartmentForm from "../features/department/DepartmentForm";
+import DepartmentTable from "../features/department/DepartmentTable";
 import { INITIAL_DEPARTMENT_FORM_DATA, DEPARTMENT_TYPES } from "../configs/constants";
 
 export default function AdminDepartmentDashboard() {

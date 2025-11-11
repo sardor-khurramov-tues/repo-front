@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import PropTypes from 'prop-types';
-import MessageComp from '../components/commons/MessageComp';
+import MessageComp from '../components/MessageComp';
 import {
   updateUserInStorage,
   updateUserDetails,
   updateUserPassword
 } from "../services/api/UserService";
-import { getPublicFacultyNonBlocked } from "../services/api/PublicService"; // Imported service
+import { getPublicFacultyNonBlocked } from "../services/api/PublicService";
 import { ORCID_REGEX, ROR_REGEX } from "../configs/constants";
 
 // Function to initialize user state from localStorage

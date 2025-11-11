@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { signout } from "../services/api/AuthService";
+import { signout } from "@/services/api/AuthService";
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from "./LanguageSelector";
-import { PATHS, USER_ROLES } from "../configs/constants";
+import { PATHS, USER_ROLES } from "@/configs/constants";
 
 export default function NavBarComp() {
   const { t } = useTranslation();

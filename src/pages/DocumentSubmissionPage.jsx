@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DOC_TYPE_LIST } from "../configs/constants";
-import DocForm from "../components/forms/DocForms";
+import DocForm from "../features/document/DocForm";
 
 export default function DocumentSubmissionPage() {
   const [activeType, setActiveType] = useState(DOC_TYPE_LIST[0]);
