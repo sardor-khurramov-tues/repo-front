@@ -15,6 +15,7 @@ import RegisterAthor from "@/pages/RegisterAthor";
 import AdminUserDashboard from "@/pages/AdminUserDashboard";
 import DocumentSubmissionPage from "@/pages/DocumentSubmissionPage";
 import AuthorDocumentDetailPage from "@/pages/AuthorDocumentDetailPage";
+import StaffDocumentView from "../pages/StaffDocumentView";
 
 export default function RouterComp() {
   return (
@@ -55,6 +56,14 @@ export default function RouterComp() {
           element={
             <ProtectedRouteComp roles={[USER_ROLES.STAFF]}>
               <StaffDashboard />
+            </ProtectedRouteComp>
+          }
+        />
+        <Route
+          path={PATHS.STAFF + PATHS.DOCUMENT + PATHS.ID_PATH_VARIABLE}
+          element={
+            <ProtectedRouteComp roles={[USER_ROLES.STAFF]}>
+              <StaffDocumentView />
             </ProtectedRouteComp>
           }
         />

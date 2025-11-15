@@ -179,8 +179,7 @@ export default function AuthorDocumentDetailPage() {
             handleDelete={handleDelete}
             handleRemoveContributor={handleRemoveContributor}
             isRemovingContributor={isRemovingContributor}
-            
-            // NEW PROPS
+            fetchDocument={fetchDocument}
             authorSearch={authorSearch}
             handleSearchAuthor={handleSearchAuthor}
             handleAddContributor={handleAddContributor}

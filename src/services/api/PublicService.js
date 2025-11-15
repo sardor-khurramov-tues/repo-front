@@ -40,7 +40,26 @@ export const searchPublicAuthor = async (key, limit, page) => {
         page,
       },
     });
-    // The structure is { code: 0, message: "success", payload: {...} }
+    return response.data.payload;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const getPublicDocumentByKey = async (key) => {
+  try {
+    const response = await API.get(API_PATHS.PUBLIC + API_PATHS.DOCUMENT + "/" + key);
+    return response.data.payload;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const getPublicAuthorByKey = async (key) => {
+  try {
+    const response = await API.get(API_PATHS.PUBLIC + API_PATHS.AUTHOR + "/" + key);
     return response.data.payload;
   } catch (error) {
     console.error("Failed to fetch users:", error);

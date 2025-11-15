@@ -128,7 +128,7 @@ export const updateDissertation = async (id, data) => {
   }
 };
 
-export const updateConferenceProceedings = async (id, data) => {
+export const updateConfProceed = async (id, data) => {
   try {
     const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.CONFERENCE_PROCEEDINGS, data);
     return response.data;
@@ -138,7 +138,7 @@ export const updateConferenceProceedings = async (id, data) => {
   }
 };
 
-export const updateConferencePaper = async (id, data) => {
+export const updateConfPaper = async (id, data) => {
   try {
     const response = await API.put(API_PATHS.AUTHOR + API_PATHS.DOCUMENT + "/" + id + API_PATHS.CONFERENCE_PAPER, data);
     return response.data;
@@ -174,6 +174,70 @@ export const updateReport = async (id, data) => {
     return response.data;
   } catch (error) {
     console.error("Failed to submit report:", error);
+    throw error;
+  }
+};
+
+export const searchPublishedDocumentAsStaff = async (key, limit, page) => {
+  try {
+    const response = await API.get(API_PATHS.STAFF + API_PATHS.DOCUMENT + API_PATHS.FIND_BY, {
+      params: {
+        key: key || '',
+        isPublished: true,
+        limit,
+        page,
+      },
+    });
+    return response.data.payload;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const searchNonpublishedDocumentAsStaff = async (key, limit, page) => {
+  try {
+    const response = await API.get(API_PATHS.STAFF + API_PATHS.DOCUMENT + API_PATHS.FIND_BY, {
+      params: {
+        key: key || '',
+        isPublished: false,
+        limit,
+        page,
+      },
+    });
+    return response.data.payload;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const getDocumentAsStaff = async (id) => {
+  try {
+    const response = await API.get(API_PATHS.STAFF + API_PATHS.DOCUMENT + "/" + id);
+    return response.data.payload;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const publishDocumentAsStaff = async (id) => {
+  try {
+    await API.post(API_PATHS.STAFF + API_PATHS.DOCUMENT + "/" + id);
+    return true;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error;
+  }
+};
+
+export const deleteDocumentAsStaff = async (id) => {
+  try {
+    await API.delete(API_PATHS.STAFF + API_PATHS.DOCUMENT + "/" + id);
+    return true;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
     throw error;
   }
 };

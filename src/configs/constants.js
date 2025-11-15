@@ -3,6 +3,7 @@ export const APP_NAME = "TUES Repo";
 export const PATHS = {
   ALL: "*",
   ID_PATH_VARIABLE: "/:id",
+  KEY_PATH_VARIABLE: "/:key",
   HOME: "/",
   LOGIN: "/login",
   REGISTER: "/register",
@@ -121,4 +122,16 @@ export const DOC_ROLE_LIST = [
   DOC_ROLES.REVIEWER,
   DOC_ROLES.EDITOR,
   DOC_ROLES.SUPERVISOR,
+];
+
+export const DEGREE_TYPES = {
+  PHD: 'PHD',
+  MASTER: 'MASTER',
+  BACHELOR: 'BACHELOR',
+};
+
+export const DEGREE_TYPE_LIST = [
+  DEGREE_TYPES.PHD,
+  DEGREE_TYPES.MASTER,
+  DEGREE_TYPES.BACHELOR,
 ];
