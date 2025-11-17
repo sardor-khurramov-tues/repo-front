@@ -15,7 +15,9 @@ import RegisterAthor from "@/pages/RegisterAthor";
 import AdminUserDashboard from "@/pages/AdminUserDashboard";
 import DocumentSubmissionPage from "@/pages/DocumentSubmissionPage";
 import AuthorDocumentDetailPage from "@/pages/AuthorDocumentDetailPage";
-import StaffDocumentView from "../pages/StaffDocumentView";
+import StaffDocumentView from "@/pages/StaffDocumentView";
+import PublicAuthorPage from "@/pages/PublicAuthorPage";
+import PublicDocumentPage from "@/pages/PublicDocumentPage";
 
 export default function RouterComp() {
   return (
@@ -26,6 +28,8 @@ export default function RouterComp() {
         <Route path={PATHS.HOME} element={<Home />} />
         <Route path={PATHS.LOGIN} element={<Login />} />
         <Route path={PATHS.REGISTER_AUTHOR} element={<RegisterAthor />} />
+        <Route path={PATHS.AUTHOR + PATHS.KEY_PATH_VARIABLE} element={<PublicAuthorPage />} />
+        <Route path={PATHS.DOCUMENT + PATHS.KEY_PATH_VARIABLE} element={<PublicDocumentPage />} />
 
         <Route
           path={PATHS.ADMIN}
